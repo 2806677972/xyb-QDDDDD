@@ -1,0 +1,25 @@
+name: 签退
+
+on:
+  schedule:
+    - cron: '30 8 * * *'
+  workflow_dispatch:
+
+jobs:
+  sign-out:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run sign-out
+        env:
+          XYB_ACCOUNT: ${{ secrets.XYB_ACCOUNT }}
+        run: node index.js
