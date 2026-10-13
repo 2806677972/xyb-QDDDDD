@@ -1,25 +1,27 @@
 name: 签退
 
 on:
-  schedule:
-    - cron: '30 8 * * *'
   workflow_dispatch:
+  schedule:
+    # UTC 时间，中国时区减 8
+    # 北京时间 16:30 = UTC 08:30
+    - cron: '30 8 * * *'
 
 jobs:
-  sign-out:
+  run-check-out:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        
+      - uses: actions/setup-node@v3
         with:
-          node-version: '18'
+          node-version: '20.x'
+          
+      - name: 安装依赖  
+        run: |
+          npm install
 
-      - name: Install dependencies
-        run: npm install
-
-      - name: Run sign-out
-        env:
-          XYB_ACCOUNT: ${{ secrets.XYB_ACCOUNT }}
-        run: node index.js
+      - name: 运行签退
+        run: |
+          node ./index.js '${{ secrets.XYB_OUT }}'
